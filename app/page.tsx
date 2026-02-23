@@ -1,47 +1,10 @@
-// "use client";
-
-// import { Authenticated, Unauthenticated, useQuery, useMutation } from "convex/react";
-// import { SignInButton, UserButton } from "@clerk/nextjs";
-// import { api } from "../convex/_generated/api";
-// import { useEffect } from "react";
-
-// function Content() {
-//   const identity = useQuery(api.test.whoAmI);
-//   return <pre>{JSON.stringify(identity, null, 2)}</pre>;
-// }
-
-// function InitUser() {
-//   const createUser = useMutation(api.users.createUserIfNotExists);
-
-//   useEffect(() => {
-//     createUser();
-//   }, []);
-
-//   return null;
-// }
-
-// export default function Home() {
-//   return (
-//     <>
-//       <Authenticated>
-//         <UserButton />
-//         <InitUser />
-//         <div>You are signed in 🎉</div>
-//       </Authenticated>
-//       <Unauthenticated>
-//         <SignInButton />
-//       </Unauthenticated>
-//     </>
-//   );
-// }
-
 "use client";
 
 import { Authenticated, Unauthenticated, useMutation } from "convex/react";
 import { SignInButton, UserButton } from "@clerk/nextjs";
-import UserList from "../components/userComponents/UserList";
 import { api } from "../convex/_generated/api";
 import { useEffect } from "react";
+import ChatMVP from "@/components/userComponents/ChatMVP";
 
 export default function Home() {
   return (
@@ -51,7 +14,7 @@ export default function Home() {
       </Unauthenticated>
 
       <Authenticated>
-        <InitUser/>
+        <InitUser />
         <ChatLayout />
       </Authenticated>
     </>
@@ -59,10 +22,10 @@ export default function Home() {
 }
 
 function InitUser() {
-  const createUser = useMutation(api.users.createUserIfNotExists);
+  const syncUser = useMutation(api.users.createOrUpdateUser);
 
   useEffect(() => {
-    createUser();
+    syncUser();
   }, []);
 
   return null;
@@ -84,22 +47,13 @@ function Landing() {
 
 function ChatLayout() {
   return (
-    <div className="flex h-screen">
-      <div className="w-64 border-r p-4">
-        <h2 className="font-semibold mb-4">Chats</h2>
-        <UserList/>
-        <div className="text-[var(--muted)] text-sm">No conversations yet</div>
-      </div>
-
-      <div className="flex-1 flex flex-col">
+    <div className="flex h-full">
+      <div className="flex-1 flex flex-col min-h-0">
         <div className="flex justify-between items-center border-b p-4">
           <h2 className="font-semibold">Welcome</h2>
           <UserButton />
         </div>
-
-        <div className="flex-1 flex items-center justify-center text-[var(--muted)]">
-          Select or start a conversation
-        </div>
+        <ChatMVP />
       </div>
     </div>
   );
