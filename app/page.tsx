@@ -1,37 +1,60 @@
 "use client";
 
-import { Authenticated, Unauthenticated, useQuery, useMutation } from "convex/react";
+import { Authenticated, Unauthenticated, useMutation } from "convex/react";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import { api } from "../convex/_generated/api";
 import { useEffect } from "react";
+import ChatMVP from "@/components/userComponents/ChatMVP";
 
-function Content() {
-  const identity = useQuery(api.test.whoAmI);
-  return <pre>{JSON.stringify(identity, null, 2)}</pre>;
+export default function Home() {
+  return (
+    <>
+      <Unauthenticated>
+        <Landing />
+      </Unauthenticated>
+
+      <Authenticated>
+        <InitUser />
+        <ChatLayout />
+      </Authenticated>
+    </>
+  );
 }
 
 function InitUser() {
-  const createUser = useMutation(api.users.createUserIfNotExists);
+  const syncUser = useMutation(api.users.createOrUpdateUser);
 
   useEffect(() => {
-    createUser();
+    syncUser();
   }, []);
 
   return null;
 }
 
-export default function Home() {
+function Landing() {
   return (
-    <>
-      <Authenticated>
-        <UserButton />
-        <InitUser />
-        <Content/>
-        <div>You are signed in 🎉</div>
-      </Authenticated>
-      <Unauthenticated>
-        <SignInButton />
-      </Unauthenticated>
-    </>
+    <div className="flex h-screen flex-col items-center justify-center gap-6">
+      <h1 className="text-[var(--foreground)] text-4xl font-bold">Tars Chat</h1>
+      <p className="text-[var(--foreground)]">
+        Real-time conversations made simple.
+      </p>
+      <SignInButton>
+        <button className="btn-primary">Sign In</button>
+      </SignInButton>
+    </div>
+  );
+}
+
+function ChatLayout() {
+  return (
+    <div className="flex h-full">
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex justify-between items-center border-b p-4">
+          <h2 className="font-semibold">Welcome</h2>
+          <UserButton />
+        </div>
+        <ChatMVP />
+      </div>
+    </div>
   );
 }
