@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🧠 Tars Chat App
 
-## Getting Started
+A real-time one-on-one messaging application built using Next.js (App Router + TypeScript), Convex, and Clerk.
+This project was built as part of a full-stack internship coding challenge. It focuses on clean schema design, real-time communication, and proper authentication flow.
+It was my first time working with TypeScript, Convex, and Clerk together in a production-style setup, so I focused on understanding the architecture rather than just implementing features.
 
-First, run the development server:
+🚀 Tech Stack
 
-```bash
+Next.js (App Router)
+TypeScript
+Convex (Database + Real-time backend)
+Clerk (Authentication)
+Tailwind CSS
+shadcn/ui
+
+✨ Features
+
+Secure authentication with Clerk
+Automatic user sync into Convex on login
+Search users (excluding the current user)
+One-on-one direct messaging
+Real-time message updates using Convex subscriptions
+Smart message timestamps:
+Today → time only
+Same year → month + day + time
+Different year → full date + time
+Message alignment (sent vs received)
+Responsive layout (mobile-friendly chat view)
+Clean conversation creation logic (no duplicate chats)
+
+🗂 Database Schema
+
+The backend is structured around three main tables:
+
+Users
+clerkId
+email
+name
+image
+createdAt
+
+Conversations
+
+userOne
+userTwo
+lastMessage
+lastMessageAt
+createdAt
+
+Messages
+
+conversationId
+senderId
+text
+createdAt
+
+Indexes are used to efficiently fetch conversations and messages in real time.
+The schema is designed to be extensible (e.g., group chats could be added later without major restructuring).
+
+⚙️ Architecture
+Next.js (Frontend)
+        ↓
+Clerk (Authentication)
+        ↓
+Convex (Real-time Backend + Database)
+
+Clerk handles authentication and session management.
+
+Convex validates Clerk JWTs and provides real-time data updates.
+
+The frontend subscribes to Convex queries for instant UI updates.
+
+🔄 Real-Time Logic
+
+Messages are retrieved using Convex queries and automatically update via subscriptions.
+No manual polling is required — changes in the database instantly reflect in the UI.
+
+The getOrCreate mutation ensures that:
+
+A conversation between two users is reused if it already exists.
+A new conversation is created only if necessary.
+This prevents duplicate conversation threads.
+
+📱 Responsive Design
+
+Desktop: Sidebar + Chat window layout
+Mobile: Sidebar collapses and chat takes full screen
+Clean empty states and loading states
+
+🛠 Running Locally
+npm install
+npx convex dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Make sure to configure environment variables for Clerk and Convex before running.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🌍 Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Frontend: Vercel
+Backend: Convex Cloud
 
-## Learn More
+Authentication: Clerk (Development instance)
 
-To learn more about Next.js, take a look at the following resources:
+📌 Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project helped me understand:
+Real-time systems using subscriptions
+JWT-based authentication flow
+Backend schema design with indexed queries
+Environment alignment between development and production
